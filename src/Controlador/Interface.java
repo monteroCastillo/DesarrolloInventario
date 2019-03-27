@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Visualizacion;
+package Controlador;
+
+import Visualizacion.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import PostgreSQl.pgsql_dbc;
+import Visualizacion.*;
+import Modelo.*;
 
 
 
@@ -21,7 +25,7 @@ import PostgreSQl.pgsql_dbc;
 
 public class Interface {
     
-   // Crear objCrear = new Crear();
+//    Crear objCrear = new Crear();
     
 //    // Constructor
     public Interface() {
@@ -29,7 +33,8 @@ public class Interface {
     }
 
     pgsql_dbc objetoConexion = new pgsql_dbc();
-     
+    ClientesDAO objClientesDAO = new ClientesDAO();
+   // Clientes objClientes = new Clientes();
     // VisualizarClientes objVisualizar = new VisualizarClientes();
 
     public String[][] mostrarClientes() {
@@ -110,15 +115,26 @@ public class Interface {
     
     
     public String CrearProducto() {
-               
+          
+      //  String text = objCrear.txNombreProducto.getText();
+       
        // String tuplaNuevoProducto = Crear.datosNuevoProducto();
 
        // objetoConexion.llenaTabla(tuplaNuevoProducto);    
         return "";
     }
     
-    
-    
+    public void mostrarClientes2() {        
+
+        ArrayList<Clientes> arregloEntrada = new ArrayList<Clientes>();
+        arregloEntrada = objClientesDAO.listarClientes();
+
+        for (Clientes obj : arregloEntrada) {
+            System.out.println(obj.getDatosCliente());
+        }
+        
+    }  
+        
 }
     
 

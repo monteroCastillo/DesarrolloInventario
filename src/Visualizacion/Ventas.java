@@ -5,6 +5,8 @@
  */
 package Visualizacion;
 
+import Controlador.*;
+import Modelo.Productos;
 import PostgreSQl.pgsql_dbc;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,16 +22,17 @@ public class Ventas extends javax.swing.JFrame {
     /**
      * Creates new form ventas
      */
-    
+    ArrayList<Productos> arregloProductos = new ArrayList<>();
+
     pgsql_dbc objetoConexion = new pgsql_dbc();
     Interface objInterface = new Interface();
-    public Ventas() {
+    Controlador objControlador;
+
+    public Ventas(Controlador objControlador) {
         initComponents();
+        this.objControlador = objControlador;
     }
 
-    
-    
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -43,12 +46,13 @@ public class Ventas extends javax.swing.JFrame {
         labelInformacionVentas = new javax.swing.JLabel();
         comboBoxMostrarProductosVentas = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tablaVentasProductos = new javax.swing.JTable();
+        tablaVentaProductos = new javax.swing.JTable();
         botonBuscarProducto = new javax.swing.JButton();
         mostrarDatos = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         textoPrueba = new javax.swing.JTextArea();
         btPrincipalVentas = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -77,7 +81,7 @@ public class Ventas extends javax.swing.JFrame {
 
         jLabel2.setText("ID Cliente");
 
-        tablaVentasProductos.setModel(new javax.swing.table.DefaultTableModel(
+        tablaVentaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -85,12 +89,12 @@ public class Ventas extends javax.swing.JFrame {
 
             }
         ));
-        tablaVentasProductos.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaVentaProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tablaVentasProductosMouseClicked(evt);
+                tablaVentaProductosMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(tablaVentasProductos);
+        jScrollPane2.setViewportView(tablaVentaProductos);
 
         botonBuscarProducto.setText("Buscar Producto");
         botonBuscarProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -117,12 +121,19 @@ public class Ventas extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Ir a la canasta");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -143,7 +154,9 @@ public class Ventas extends javax.swing.JFrame {
                                         .addGap(97, 97, 97)
                                         .addComponent(btValidarIdClienteVentas)))))
                         .addGap(37, 37, 37)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,6 +194,8 @@ public class Ventas extends javax.swing.JFrame {
                         .addGap(28, 28, 28))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(jButton1)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -189,7 +204,7 @@ public class Ventas extends javax.swing.JFrame {
 
     private void btValidarIdClienteVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btValidarIdClienteVentasActionPerformed
         consultarIdCliente();
-        
+
     }//GEN-LAST:event_btValidarIdClienteVentasActionPerformed
 
     private void botonBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarProductoActionPerformed
@@ -200,102 +215,82 @@ public class Ventas extends javax.swing.JFrame {
         mostrarDatos();
     }//GEN-LAST:event_mostrarDatosActionPerformed
 
-    private void tablaVentasProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaVentasProductosMouseClicked
-        int row = tablaVentasProductos.rowAtPoint(evt.getPoint());
+    private void tablaVentaProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaVentaProductosMouseClicked
+        int row = tablaVentaProductos.rowAtPoint(evt.getPoint());
 
-   /* row devolvera -1 si se ha clicado fuera de la fila pero dentro de la tabla, si no devolvera el indice de la fila en la que se ha clicado. */
-
-        String dato;
-        textoPrueba.append((String) tablaVentasProductos.getValueAt(row, 0));
-        textoPrueba.append((String) tablaVentasProductos.getValueAt(row, 1));
-    }//GEN-LAST:event_tablaVentasProductosMouseClicked
+        datosTablaProducto(row);
+    }//GEN-LAST:event_tablaVentaProductosMouseClicked
 
     private void btPrincipalVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPrincipalVentasActionPerformed
-        DashBoard volverHome= new DashBoard();
+        DashBoard volverHome = new DashBoard(objControlador);
         volverHome.setVisible(true);
         this.dispose(); // instruccion que cierra la ventana actual
     }//GEN-LAST:event_btPrincipalVentasActionPerformed
 
-    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        CanastaCompra canasta = new CanastaCompra();
+        canasta.setVisible(true);
+        this.dispose(); // instruccion que cierra la ventana actual
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public ArrayList datosTablaProducto(int row) {
+
+
+        /* row devolvera -1 si se ha clicado fuera de la fila pero dentro de la tabla, si no devolvera el indice de la fila en la que se ha clicado. */
+        //saca los valores de la tabla de Productos de la clase Ventas
+        String codigoProducto = ((String) tablaVentaProductos.getValueAt(row, 0));
+        String nombreProducto = ((String) tablaVentaProductos.getValueAt(row, 1));
+        float valorProducto = ((float) tablaVentaProductos.getValueAt(row, 0));
+        //textoPrueba.append((String) tablaVentasProductos.getValueAt(row, 4));
+        //arregloProductos.add(new Productos(codigoProducto,nombreProducto,valorProducto));
+
+        return arregloProductos;
+
+    }
+
     private void consultarIdCliente() {
 
-        // Declaración el ArrayList
-        ArrayList<String> arregloEntrada = new ArrayList<String>();
-        arregloEntrada = objetoConexion.busqueda("clientes", "ced_nit_cliente =" + "'" + txID_cliente_ventas.getText() + "'", 8); //El numero 4 es el numero de parametros que devuelve
+        objControlador.consultarIdCliente(labelInformacionVentas, txID_cliente_ventas.getText());
 
-        //txID_cliente_ventas.setText("");
-        if (arregloEntrada.isEmpty()) {
-            // JOptionPane.showMessageDialog(this, "No hay datos para Mostrar");
-            labelInformacionVentas.setText("NO hay datos para Mostrar, cliente no creado");
-
-        } else {
-
-            labelInformacionVentas.setText("Cliente Encontrado");
-
-        }
     }
-   
+
     /**
      * Llena el combobox con todos los nombres de los productos
      */
     private void llenarComboboxVentas() {
+        
+        objControlador.llenarComboboxVentas(comboBoxMostrarProductosVentas);
 
-        //btMostrarInformacionTablas.setEnabled(false);
-        ArrayList<String> arregloEntrada = new ArrayList<String>();
-        String sacaTabla = "SELECT nombreproducto FROM producto";
-        arregloEntrada = objetoConexion.actualizar(sacaTabla);
-        Iterator<String> nombreIterator = arregloEntrada.iterator();
-
-        while (nombreIterator.hasNext()) {
-            String elemento = nombreIterator.next();
-
-        }
-
-        for (int i = 0; i < arregloEntrada.size(); i++) {
-            String tipo = (String) arregloEntrada.get(i);
-            comboBoxMostrarProductosVentas.addItem(tipo);
-        }
-    }
-        
-    private void mostrarDatos(){
-        
-       String[][] arregloEntrada ;
-       arregloEntrada  = (objInterface.mostrarProductos());     /////?????????????????????????? no se creo el new que pasa???   
-       int numCol = 7;
-       int numFilas = 2;
-        
-        DefaultTableModel  model = (DefaultTableModel )tablaVentasProductos.getModel();
-        model.setRowCount(11);   //Cantidad de filas
-        //model.setColumnCount(4);  //cantidad de columnas
-        
-        //Se agregan los datos del cliente para que aparezcan en el encabezado de la tabla 
-        model.addColumn("Producto");
-        model.addColumn("Codigo");
-        model.addColumn("Cantidad");
-        model.addColumn("Valor Compra");
-        model.addColumn("Valor Venta");
-        model.addColumn("Proveedor");
-        model.addColumn("Descripcion");
-        
-        for(int i = 0; i<  numFilas; i++){
-            
-            for (int j =0; j < numCol; j++) {
-            
-            tablaVentasProductos.setValueAt(arregloEntrada[j][i],i,j); // dato, posicion en x, posicion en y
-            
-            }
-           
-        }
-        
+//        //btMostrarInformacionTablas.setEnabled(false);
+//        ArrayList<String> arregloEntrada = new ArrayList<String>();
+//        String sacaTabla = "SELECT nombreproducto FROM producto";
+//        arregloEntrada = objetoConexion.actualizar(sacaTabla);
+//        Iterator<String> nombreIterator = arregloEntrada.iterator();
+//
+//        while (nombreIterator.hasNext()) {
+//            String elemento = nombreIterator.next();
+//
+//        }
+//
+//        for (int i = 0; i < arregloEntrada.size(); i++) {
+//            String tipo = (String) arregloEntrada.get(i);
+//            comboBoxMostrarProductosVentas.addItem(tipo);
+//        }
     }
 
-    
+    private void mostrarDatos() {
+        String consulta = "SELECT * FROM producto";
+        objControlador.llenarTablaProductos(tablaVentaProductos, consulta);
+
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonBuscarProducto;
     private javax.swing.JButton btPrincipalVentas;
     private javax.swing.JButton btValidarIdClienteVentas;
     private javax.swing.JComboBox<String> comboBoxMostrarProductosVentas;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -304,7 +299,7 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel labelInformacionVentas;
     private javax.swing.JButton mostrarDatos;
-    private javax.swing.JTable tablaVentasProductos;
+    private javax.swing.JTable tablaVentaProductos;
     private javax.swing.JTextArea textoPrueba;
     private javax.swing.JTextField txID_cliente_ventas;
     // End of variables declaration//GEN-END:variables

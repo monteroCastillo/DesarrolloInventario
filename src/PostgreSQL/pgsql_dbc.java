@@ -36,8 +36,8 @@ public class pgsql_dbc {
             try {
                 System.out.println("Conectando a la base de datos!");
                 /* Obtenemos una conexi�n a la base de datos */
-               //  "postgres","1234"   
-                //db = DriverManager.getConnection("jdbc:postgresql:test", "postgres", "cursoDB1");
+               //  "postgres","1234"  
+               
                 db = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/Proyecto","postgres","1234");
                 connected = true;
             } catch (SQLException se) {
@@ -392,6 +392,69 @@ public class pgsql_dbc {
         }
         
     
+        return arregloSalida;
+    }
+    
+       public ArrayList tupla(String consulta , int numColums){
+        
+        ArrayList<String> arregloSalida = new ArrayList<>();  
+       
+        int contador = 0;
+        ResultSet rs;                  
+        Statement stmt;
+
+        boolean error_loading_driver = false;
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException cnfe) {
+            error_loading_driver = true;
+        }
+
+        if (!error_loading_driver) {
+            boolean connected = false;
+            try {
+                System.out.println("Conectando a la base de datos!");
+               
+                db = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/Proyecto","postgres","1234");
+                connected = true;
+            } catch (SQLException se) {
+                System.out.println("No se ha podido conectar a la base.");
+            }
+            if (connected) {
+
+                System.out.println("Ya se ha conectado a la base de datos");
+
+                try {                    
+                    stmt = db.createStatement();                    
+              //      consulta = 'SELECT * FROM " + tabla + "WHERE " + variableConsultada + numColumns ;  
+              //consulta = "SELECT nombrecliente FROM clientes   WHERE " + variableConsultada;
+                   System.out.println("La sentencia es: "  + consulta);
+                    
+                    rs = stmt.executeQuery(consulta);
+                    while (rs.next()) {
+                        ++contador;
+                        for(int i = 1; i<=numColums; i++)
+                            arregloSalida.add(rs.getString(i));                    
+                                                
+                        System.out.println("el valor del contador es " + contador);                       
+                    }          
+                                      
+                    rs.close();
+                    /* Cerramos la conexi�n a la base de datos */
+                    db.close();                  
+                    
+                    System.out.println("Base de datos cerrada");
+                    
+                    
+                } catch (SQLException se) {
+                    System.out.println("No se ha podido cerrar la base.");
+                }
+            }
+        } else {
+            System.out.println("No se ha podido encontrar el driver JDBC para PostGreSQL.");
+        }
+        
+        System.out.println("El tama�o del arrayList es: " + arregloSalida.size());
         return arregloSalida;
     }
  

@@ -5,6 +5,7 @@
  */
 package Visualizacion;
 
+import Controlador.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.*;
@@ -19,15 +20,20 @@ import jdk.nashorn.internal.ir.BreakNode;
 
 
 public class VisualizarClientes extends javax.swing.JFrame {
-
+    
+    Controlador objControlador;
     Interface objInterface;
     /**
      * Creates new form VisualizarClientes
      */
-    public VisualizarClientes() {
+    public VisualizarClientes(Controlador objControlador) {
+        
+        
         initComponents();
         
-        objInterface = new Interface();
+        this.objControlador = objControlador;
+        
+        
     }
 
     /**
@@ -42,7 +48,7 @@ public class VisualizarClientes extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnMostrarClientes = new javax.swing.JButton();
         btPrincipalClientes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -60,10 +66,10 @@ public class VisualizarClientes extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Gill Sans MT", 1, 24)); // NOI18N
         jLabel1.setText("Visualizar Clientes");
 
-        jButton1.setText("Mostrar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrarClientes.setText("Mostrar");
+        btnMostrarClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnMostrarClientesActionPerformed(evt);
             }
         });
 
@@ -87,7 +93,7 @@ public class VisualizarClientes extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(158, 158, 158)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnMostrarClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(59, 59, 59)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -101,7 +107,7 @@ public class VisualizarClientes extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btPrincipalClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(73, 73, 73)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnMostrarClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -110,20 +116,15 @@ public class VisualizarClientes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int numFilas= 4;
-        int numCol = 8;
-        String[][] arregloEntrada = new String[numFilas][numCol];
-        arregloEntrada  = objInterface.mostrarClientes();        // TODO add your handling code here:
-        
-        mostrar(arregloEntrada);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void btPrincipalClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPrincipalClientesActionPerformed
-        DashBoard volverHome= new DashBoard();
+        DashBoard volverHome= new DashBoard(objControlador);
         volverHome.setVisible(true);
         this.dispose(); // instruccion que cierra la ventana actual
     }//GEN-LAST:event_btPrincipalClientesActionPerformed
+
+    private void btnMostrarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarClientesActionPerformed
+        objControlador.llenarTablaClientes(tablaClientes);
+    }//GEN-LAST:event_btnMostrarClientesActionPerformed
 
     public void mostrar(String[][] arregloEntrada) {
 
@@ -156,15 +157,18 @@ public class VisualizarClientes extends javax.swing.JFrame {
        
 
     }
-
+    
+   /**
+    * Envia los datos al controlador para crear el nuevo Cliente ingresado
+    */ 
    
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btPrincipalClientes;
-    private javax.swing.JButton jButton1;
+    public javax.swing.JButton btnMostrarClientes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaClientes;
+    public javax.swing.JTable tablaClientes;
     // End of variables declaration//GEN-END:variables
 }

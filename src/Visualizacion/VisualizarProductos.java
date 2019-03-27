@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package Visualizacion;
-
-import java.awt.event.MouseAdapter;
-import javax.swing.table.DefaultTableModel;
+import Controlador.*;
 import javax.swing.table.DefaultTableModel;//Ocupas Importar esta libreria
 
 /**
@@ -18,11 +16,11 @@ public class VisualizarProductos extends javax.swing.JFrame {
     /**
      * Creates new form VisualizarProductos
      */
-    Interface objInterface;// = new Interface();;
-    public VisualizarProductos() {
+    Controlador objControlador;
+    public VisualizarProductos(Controlador objControlador) {
         initComponents();
-        objInterface = new Interface();
-        tablaProductos.addMouseListener(new MouseAdapter() {});
+        this.objControlador = objControlador;
+        
     }
 
     /**
@@ -35,7 +33,7 @@ public class VisualizarProductos extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        botonMostrarProductos = new javax.swing.JButton();
+        btnMostrarProductos = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductos = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
@@ -45,10 +43,10 @@ public class VisualizarProductos extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        botonMostrarProductos.setText("Mostrar Productos");
-        botonMostrarProductos.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrarProductos.setText("Mostrar Productos");
+        btnMostrarProductos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonMostrarProductosActionPerformed(evt);
+                btnMostrarProductosActionPerformed(evt);
             }
         });
 
@@ -91,7 +89,7 @@ public class VisualizarProductos extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(142, 142, 142)
-                                .addComponent(botonMostrarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnMostrarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(btPrincipalProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -115,7 +113,7 @@ public class VisualizarProductos extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(btPrincipalProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24)
-                        .addComponent(botonMostrarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnMostrarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -144,11 +142,11 @@ public class VisualizarProductos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void botonMostrarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonMostrarProductosActionPerformed
-       
-        
-        mostrarProductos();
-    }//GEN-LAST:event_botonMostrarProductosActionPerformed
+    private void btnMostrarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarProductosActionPerformed
+      
+      String consulta = "SELECT * FROM producto";
+      objControlador.llenarTablaProductos(tablaProductos,consulta);
+    }//GEN-LAST:event_btnMostrarProductosActionPerformed
 
     private void tablaProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaProductosMouseClicked
         int row = tablaProductos.rowAtPoint(evt.getPoint());
@@ -162,83 +160,83 @@ public class VisualizarProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaProductosMouseClicked
 
     private void btPrincipalProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPrincipalProductosActionPerformed
-        DashBoard volverHome= new DashBoard();
+        DashBoard volverHome= new DashBoard(objControlador);
         volverHome.setVisible(true);
         this.dispose(); // instruccion que cierra la ventana actual
     }//GEN-LAST:event_btPrincipalProductosActionPerformed
 
-   public void mostrarProductos() {
-
-        // String[][] arregloEntrada = new String[2][7];
-       String[][] arregloEntrada ;
-       arregloEntrada  = (objInterface.mostrarProductos());     /////?????????????????????????? no se creo el new que pasa???   
-       int numCol = 7;
-       int numFilas = 2;
-        
-        DefaultTableModel  model = (DefaultTableModel )tablaProductos.getModel();
-        model.setRowCount(11);   //Cantidad de filas
-        //model.setColumnCount(4);  //cantidad de columnas
-        
-        //Se agregan los datos del cliente para que aparezcan en el encabezado de la tabla 
-        model.addColumn("Producto");
-        model.addColumn("Codigo");
-        model.addColumn("Cantidad");
-        model.addColumn("Valor Compra");
-        model.addColumn("Valor Venta");
-        model.addColumn("Proveedor");
-        model.addColumn("Descripcion");
-        
-        for(int i = 0; i<  numFilas; i++){
-            
-            for (int j =0; j < numCol; j++) {
-            
-            tablaProductos.setValueAt(arregloEntrada[j][i],i,j); // dato, posicion en x, posicion en y
-            
-            }
-           
-        }
-   }  
+//   public void mostrarProductos() {
+//
+//        // String[][] arregloEntrada = new String[2][7];
+//       String[][] arregloEntrada ;
+//       arregloEntrada  = (objInterface.mostrarProductos());     /////?????????????????????????? no se creo el new que pasa???   
+//       int numCol = 7;
+//       int numFilas = 2;
+//        
+//        DefaultTableModel  model = (DefaultTableModel )tablaProductos.getModel();
+//        model.setRowCount(11);   //Cantidad de filas
+//        //model.setColumnCount(4);  //cantidad de columnas
+//        
+//        //Se agregan los datos del cliente para que aparezcan en el encabezado de la tabla 
+//        model.addColumn("Producto");
+//        model.addColumn("Codigo");
+//        model.addColumn("Cantidad");
+//        model.addColumn("Valor Compra");
+//        model.addColumn("Valor Venta");
+//        model.addColumn("Proveedor");
+//        model.addColumn("Descripcion");
+//        
+//        for(int i = 0; i<  numFilas; i++){
+//            
+//            for (int j =0; j < numCol; j++) {
+//            
+//            tablaProductos.setValueAt(arregloEntrada[j][i],i,j); // dato, posicion en x, posicion en y
+//            
+//            }
+//           
+//        }
+//   }  
    
-   public void mostrarProductosVentas() {
-
-        // String[][] arregloEntrada = new String[2][7];
-       String[][] arregloEntrada ;
-       arregloEntrada  = (objInterface.mostrarProductos());     /////?????????????????????????? no se creo el new que pasa???   
-       int numCol = 7;
-       int numFilas = 2;
-        
-        DefaultTableModel  model = (DefaultTableModel )tablaProductos.getModel();
-        model.setRowCount(11);   //Cantidad de filas
-        //model.setColumnCount(4);  //cantidad de columnas
-        
-        //Se agregan los datos del cliente para que aparezcan en el encabezado de la tabla 
-        model.addColumn("Producto");
-        model.addColumn("Codigo");
-        model.addColumn("Cantidad");
-        model.addColumn("Valor Compra");
-        model.addColumn("Valor Venta");
-        model.addColumn("Proveedor");
-        model.addColumn("Descripcion");
-        
-        for(int i = 0; i<  numFilas; i++){
-            
-            for (int j =0; j < numCol; j++) {
-            
-            tablaProductos.setValueAt(arregloEntrada[j][i],i,j); // dato, posicion en x, posicion en y
-            
-            }
-           
-        }
-   }  
+//   public void mostrarProductosVentas() {
+//
+//        // String[][] arregloEntrada = new String[2][7];
+//       String[][] arregloEntrada ;
+//       arregloEntrada  = (objInterface.mostrarProductos());     /////?????????????????????????? no se creo el new que pasa???   
+//       int numCol = 7;
+//       int numFilas = 2;
+//        
+//        DefaultTableModel  model = (DefaultTableModel )tablaProductos.getModel();
+//        model.setRowCount(11);   //Cantidad de filas
+//        //model.setColumnCount(4);  //cantidad de columnas
+//        
+//        //Se agregan los datos del cliente para que aparezcan en el encabezado de la tabla 
+//        model.addColumn("Producto");
+//        model.addColumn("Codigo");
+//        model.addColumn("Cantidad");
+//        model.addColumn("Valor Compra");
+//        model.addColumn("Valor Venta");
+//        model.addColumn("Proveedor");
+//        model.addColumn("Descripcion");
+//        
+//        for(int i = 0; i<  numFilas; i++){
+//            
+//            for (int j =0; j < numCol; j++) {
+//            
+//            tablaProductos.setValueAt(arregloEntrada[j][i],i,j); // dato, posicion en x, posicion en y
+//            
+//            }
+//           
+//        }
+//   }  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton botonMostrarProductos;
     private javax.swing.JButton btPrincipalProductos;
+    public javax.swing.JButton btnMostrarProductos;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tablaProductos;
+    public javax.swing.JTable tablaProductos;
     private javax.swing.JTextArea textoPrueba;
     // End of variables declaration//GEN-END:variables
 }
